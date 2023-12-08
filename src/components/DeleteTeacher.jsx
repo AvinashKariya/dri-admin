@@ -1,4 +1,15 @@
-import { Button, Container, Grid, TextField, Typography } from "@mui/material";
+import {
+  Button,
+  Container,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Grid,
+  TextField,
+  Typography,
+} from "@mui/material";
 import React, { useState } from "react";
 import Navbar from "./Navbar";
 import axios from "axios";
@@ -6,38 +17,44 @@ import axios from "axios";
 const DeleteTeacher = () => {
   //defining states for inputs
   const [id, setId] = useState("");
+  const [open, setOpen] = useState(false);
 
   //on submit for --api request
   const submitDeleteTeacherForm = async (e) => {
     e.preventDefault();
 
-    const response = await axios.delete(`apiurl/${id}`);
+    const response = await axios.delete(
+      `http://localhost:3000/deleteteacher/${id}`
+    );
     console.log(response);
+    if (response.statusText == "OK") {
+      setOpen(true);
+    }
     clearData();
   };
 
   const clearData = () => {
-    setEmail("");
     setId("");
-    setFirstName("");
-    setLastName("");
   };
 
+  function handleClose() {
+    setOpen(false);
+  }
   return (
     <>
       <Navbar />
       <Container style={{ marginTop: "100px" }}>
-        <Typography variant='h4' gutterBottom>
-          Delete Teacher
+        <Typography variant="h4" gutterBottom>
+          Remove Teacher
         </Typography>
 
         <form onSubmit={submitDeleteTeacherForm}>
           <Grid container spacing={2} style={{ marginTop: "10px" }}>
             <Grid item xs={6}>
               <TextField
-                label='ID'
-                name='id'
-                variant='outlined'
+                label="ID"
+                name="id"
+                variant="outlined"
                 fullWidth
                 value={id}
                 required
@@ -52,20 +69,35 @@ const DeleteTeacher = () => {
               style={{ display: "flex", justifyContent: "center" }}
             >
               <Button
-                type='submit'
-                variant='contained'
+                type="submit"
+                variant="contained"
                 style={{
                   width: "200px",
                   padding: "10px",
-                  backgroundColor: "#B99470",
+                  backgroundColor: "#1E1D18",
                   color: "white",
                 }}
               >
-                Delete Student
+                Remove Teacher
               </Button>
             </Grid>
           </Grid>
         </form>
+        <Dialog
+          open={open}
+          keepMounted
+          aria-describedby="alert-dialog-slide-description"
+        >
+          <DialogTitle>{"Success"}</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-slide-description">
+              Teacher Deleted Successfully
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleClose}>Okay</Button>
+          </DialogActions>
+        </Dialog>
       </Container>
     </>
   );
